@@ -1,4 +1,4 @@
-package asia.grails.simpledms
+package asia.grails.dbdms
 
 class DocumentController {
 
@@ -23,8 +23,7 @@ class DocumentController {
         } else {
             def documentInstance = new Document()
             documentInstance.filename = file.originalFilename
-            documentInstance.fullPath = grailsApplication.config.uploadFolder + documentInstance.filename
-            file.transferTo(new File(documentInstance.fullPath))
+            documentInstance.filedata = file.getBytes()
             documentInstance.save()
         }
         redirect (action:'list')
@@ -39,19 +38,11 @@ class DocumentController {
             response.setContentType("APPLICATION/OCTET-STREAM")
             response.setHeader("Content-Disposition", "Attachment;Filename=\"${documentInstance.filename}\"")
 
-            def file = new File(documentInstance.fullPath)
-            def fileInputStream = new FileInputStream(file)
             def outputStream = response.getOutputStream()
-
-            byte[] buffer = new byte[4096];
-            int len;
-            while ((len = fileInputStream.read(buffer)) > 0) {
-                outputStream.write(buffer, 0, len);
-            }
-
+            outputStream << documentInstance.filedata
             outputStream.flush()
             outputStream.close()
-            fileInputStream.close()
         }
     }
 }
+

@@ -1,4 +1,3 @@
-<%@ page import="asia.grails.simpledms.Document" %>
 <!DOCTYPE html>
 <html>
 	<head>
